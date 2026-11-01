@@ -1,0 +1,181 @@
+import { useCallback, useEffect, useRef, useState } from "react"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Setup } from "@/components/Setup"
+import { GrammarUses } from "@/components/GrammarUses"
+import { Quiz } from "@/components/Quiz"
+import { Results } from "@/components/Results"
+import { QUESTIONS, type Question } from "@/data/questions"
+import { TOPICS, type TopicId } from "@/data/topics"
+import { usePersistentState } from "@/lib/storage"
+import type { AnswerRecord, Mastery, Settings } from "@/types"
+
+type Screen = "setup" | "quiz" | "results"
+
+const DEFAULT_SETTINGS: Settings = {
+  shuffle: true,
+  wordBank: false,
+  forgiving: true,
+  physicalMap: true,
+  showLatin: true,
+  deviceKeyboard: false,
+}
+
+function shuffled<T>(list: T[]): T[] {
+  const a = [...list]
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[a[i], a[j]] = [a[j], a[i]]
+  }
+  return a
+}
+
+export default function App() {
+  const [screen, setScreen] = useState<Screen>("setup")
+  const [prefs, setPrefs] = usePersistentState("ahq-prefs", {
+    selected: TOPICS.map((t) => t.id) as TopicId[],
+    length: 20 as number | "all",
+    settings: DEFAULT_SETTINGS,
+  })
+  const [mastery, setMastery] = usePersistentState<Mastery>("ahq-mastery", {})
+  const [session, setSession] = useState<Question[]>([])
+  const [records, setRecords] = useState<AnswerRecord[]>([])
+  const [sessionKey, setSessionKey] = useState(0)
+  const migratedTopics = useRef(false)
+
+  // Add newly introduced topics to saved selections from earlier app versions.
+  useEffect(() => {
+    if (migratedTopics.current) return
+    migratedTopics.current = true
+    const known = new Set(TOPICS.map((topic) => topic.id))
+    const selected = Array.isArray(prefs.selected) ? prefs.selected.filter((id) => known.has(id)) : []
+    const newTopics: TopicId[] = [
+      "present-negation", "past-negation", "laysa", "kana", "attached-pronouns",
+      "future", "dual", "noun-adjective", "idaafa", "nominal-sentences", "nisba", "subjunctive",
+      "verbal-sentences", "roots-patterns", "vocabulary",
+    ]
+    const additions = newTopics.filter((id) => !selected.includes(id))
+    if (additions.length) setPrefs((current) => ({ ...current, selected: [...selected, ...additions] }))
+  }, [prefs.selected, setPrefs])
+
+  const settings = { ...DEFAULT_SETTINGS, ...(prefs.settings && typeof prefs.settings === "object" ? prefs.settings : {}) }
+
+  const begin = useCallback(
+    (pool: Question[], limit: number | "all") => {
+      const ordered = settings.shuffle
+        ? shuffled(pool)
+        : [...pool].sort((a, b) => QUESTIONS.indexOf(a) - QUESTIONS.indexOf(b))
+      setSession(limit === "all" ? ordered : ordered.slice(0, limit))
+      setRecords([])
+      setSessionKey((k) => k + 1)
+      setScreen("quiz")
+      window.scrollTo({ top: 0 })
+    },
+    [settings.shuffle],
+  )
+
+  const start = () => {
+    const selected = Array.isArray(prefs.selected) ? prefs.selected : []
+    const pool = QUESTIONS.filter((q) => selected.includes(q.topic))
+    if (pool.length) begin(pool, prefs.length === "all" || typeof prefs.length === "number" ? prefs.length : 20)
+  }
+
+  const markCorrect = useCallback((id: string) => setMastery((m) => (m[id] ? m : { ...m, [id]: true })), [setMastery])
+
+  return (
+    <div className="min-h-svh bg-background">
+      <header className="border-b bg-card/70 backdrop-blur">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+          <button type="button" onClick={() => setScreen("setup")} className="flex items-center gap-3 text-left">
+            <div className="flex size-10 items-center justify-center rounded-xl bg-primary font-arabic text-2xl text-primary-foreground">
+              ض
+            </div>
+            <div>
+              <h1 className="leading-tight font-semibold">Arabic for Heritage I · Quiz 2</h1>
+              <p className="text-xs text-muted-foreground">Fill-in-the-blank practice · {QUESTIONS.length} questions</p>
+            </div>
+          </button>
+          <span dir="rtl" className="hidden font-arabic text-xl text-primary sm:block">
+            املأ الفراغ
+          </span>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+        {screen === "setup" && (
+          <Tabs defaultValue="practice" className="gap-6">
+            <TabsList>
+              <TabsTrigger value="practice">Practice</TabsTrigger>
+              <TabsTrigger value="uses">Grammar uses</TabsTrigger>
+            </TabsList>
+            <TabsContent value="practice">
+              <Setup
+                selected={prefs.selected}
+                onToggleTopic={(id) =>
+                  setPrefs((p) => ({
+                    ...p,
+                    selected: p.selected.includes(id) ? p.selected.filter((x) => x !== id) : [...p.selected, id],
+                  }))
+                }
+                onSelectAll={(all) => setPrefs((p) => ({ ...p, selected: all ? TOPICS.map((t) => t.id) : [] }))}
+                onSelectGroup={(ids, select) => setPrefs((p) => {
+                  const current = Array.isArray(p.selected) ? p.selected : []
+                  return {
+                    ...p,
+                    selected: select
+                      ? Array.from(new Set([...current, ...ids]))
+                      : current.filter((id) => !ids.includes(id)),
+                  }
+                })}
+                onFocusTopic={(id) => setPrefs((p) => ({ ...p, selected: [id] }))}
+                length={prefs.length}
+                onLength={(length) => setPrefs((p) => ({ ...p, length }))}
+                settings={settings}
+                onSettings={(s) => setPrefs((p) => ({ ...p, settings: s }))}
+                mastery={mastery}
+                onResetMastery={() => setMastery({})}
+                onStart={start}
+              />
+            </TabsContent>
+            <TabsContent value="uses">
+              <GrammarUses />
+            </TabsContent>
+          </Tabs>
+        )}
+
+        {screen === "quiz" && session.length > 0 && (
+          <Quiz
+            key={sessionKey}
+            questions={session}
+            settings={settings}
+            onCorrect={markCorrect}
+            onExit={(r) => {
+              setRecords(r)
+              setScreen(r.length ? "results" : "setup")
+            }}
+            onFinish={(r) => {
+              setRecords(r)
+              setScreen("results")
+            }}
+          />
+        )}
+
+        {screen === "results" && (
+          <Results
+            questions={session}
+            records={records}
+            onRetryMissed={() => {
+              const ok = new Set(records.filter((r) => r.outcome === "correct").map((r) => r.questionId))
+              begin(session.filter((q) => !ok.has(q.id)), "all")
+            }}
+            onRestart={start}
+            onSetup={() => setScreen("setup")}
+          />
+        )}
+      </main>
+
+      <footer className="mx-auto max-w-6xl px-4 pb-8 text-xs text-muted-foreground sm:px-6">
+        Based on the Arabic for Heritage I Quiz 2 study guide (Fall 2026).
+      </footer>
+    </div>
+  )
+}
