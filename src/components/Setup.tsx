@@ -91,7 +91,7 @@ export function Setup({
   }
 
   return (
-    <div className="grid gap-5 pb-24 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-7 lg:pb-0">
+    <div className="grid gap-4 pb-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-7 lg:pb-0">
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -411,18 +411,6 @@ export function Setup({
         </p>
       </aside>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/20 bg-background/95 px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-16px_rgba(15,23,42,0.3)] backdrop-blur-xl lg:hidden">
-        <div className="mx-auto flex max-w-xl items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-xs font-medium">{selectedTopics.length} topics selected</p>
-            <p className="truncate text-xs text-muted-foreground">{available} questions · {sessionSize} in this session</p>
-          </div>
-          <Button className="h-12 min-w-36 px-4" disabled={available === 0} onClick={onStart}>
-            {settings.shuffle ? <Shuffle /> : <Play />}
-            {available === 0 ? "Choose a topic" : "Start practice"}
-          </Button>
-        </div>
-      </div>
     </div>
   )
 }

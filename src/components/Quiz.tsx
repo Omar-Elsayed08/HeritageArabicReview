@@ -146,8 +146,8 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
   const filledSentence = q.sentence.replace("___", q.answers[0].replace(/ـ$/, ""))
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-6">
-      <div className="flex items-center gap-2 rounded-2xl border border-border/70 bg-card/85 p-2 shadow-sm backdrop-blur-sm sm:gap-4 sm:px-3">
+    <div className="mx-auto max-w-3xl space-y-3 sm:space-y-6">
+      <div className="sticky top-0 z-20 -mx-3 flex items-center gap-2 border-b border-border/70 bg-background/95 p-2 shadow-sm backdrop-blur-xl sm:static sm:mx-0 sm:gap-4 sm:rounded-2xl sm:border sm:bg-card/85 sm:px-3">
         <Button variant="ghost" size="icon" className="size-11 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onClick={() => onExit(records)} aria-label="End session">
           <X />
         </Button>
@@ -166,7 +166,7 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
       </div>
 
       <Card className="overflow-visible border-primary/15 bg-card shadow-[0_18px_54px_-36px_rgba(29,61,51,0.36)] sm:rounded-3xl">
-        <CardContent className="space-y-5 px-4 py-5 sm:space-y-6 sm:px-7 sm:py-7">
+        <CardContent className="space-y-4 px-3.5 py-4 sm:space-y-6 sm:px-7 sm:py-7">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex min-w-0 items-center gap-2.5">
               <span className="size-2 rounded-full bg-primary ring-4 ring-primary/10" />
