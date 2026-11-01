@@ -65,6 +65,7 @@ export function Setup({
 }: Props) {
   const [search, setSearch] = useState("")
   const [openGroups, setOpenGroups] = useState<string[]>(["Foundations"])
+  const [dashboardOpen, setDashboardOpen] = useState(() => window.matchMedia("(min-width: 1024px)").matches)
   const available = QUESTIONS.filter((q) => selected.includes(q.topic)).length
   const sessionSize = length === "all" ? available : Math.min(length, available)
   const selectedTopics = TOPICS
@@ -90,7 +91,7 @@ export function Setup({
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
+    <div className="grid gap-6 pb-24 lg:grid-cols-[1fr_340px] lg:pb-0">
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
@@ -100,24 +101,35 @@ export function Setup({
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => onSelectAll(true)}>
+            <Button variant="outline" size="sm" className="h-10 px-3" onClick={() => onSelectAll(true)}>
               Select all
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => onSelectAll(false)}>
+            <Button variant="ghost" size="sm" className="h-10 px-3" onClick={() => onSelectAll(false)}>
               Clear
             </Button>
           </div>
         </div>
 
         <Card className="overflow-hidden border-primary/15 bg-gradient-to-br from-card via-card to-primary/[0.06]">
-          <CardHeader className="pb-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <CardTitle className="text-base">Your learning dashboard</CardTitle>
-              <Badge variant="outline">Updates as you practice</Badge>
-            </div>
-            <CardDescription>Progress is based on questions you have answered correctly at least once.</CardDescription>
+          <CardHeader className="p-0">
+            <button
+              type="button"
+              aria-expanded={dashboardOpen}
+              onClick={() => setDashboardOpen((open) => !open)}
+              className="flex min-h-14 w-full items-center justify-between gap-3 px-4 py-3 text-left sm:px-5"
+            >
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold">Your learning dashboard</span>
+                <span className="block text-xs text-muted-foreground">{overallPercent}% overall · {practicedTopics}/{TOPICS.length} topics practiced</span>
+              </span>
+              <span className="flex shrink-0 items-center gap-2">
+                <Badge variant="outline" className="hidden sm:inline-flex">Updates as you practice</Badge>
+                <ChevronDown className={cn("size-4 transition-transform", dashboardOpen && "rotate-180")} />
+              </span>
+            </button>
           </CardHeader>
-          <CardContent className="space-y-4">
+          {dashboardOpen && <CardContent className="space-y-4 border-t px-4 py-4 sm:px-5">
+            <CardDescription>Progress is based on questions you have answered correctly at least once.</CardDescription>
             <div className="grid grid-cols-3 gap-2">
               <div className="rounded-lg border border-emerald-200/70 bg-emerald-50/70 p-3 dark:border-emerald-900/50 dark:bg-emerald-950/30">
                 <div className="text-xl font-semibold tabular-nums">{totalMastered}<span className="text-sm font-normal text-muted-foreground"> / {QUESTIONS.length}</span></div>
@@ -162,7 +174,7 @@ export function Setup({
                       </div>
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-xs text-muted-foreground">{remaining} to master · {mastered}/{total}</span>
-                        <button type="button" onClick={() => focusTopic(topic.id)} className="shrink-0 text-xs font-medium text-primary underline-offset-2 hover:underline">
+                        <button type="button" onClick={() => focusTopic(topic.id)} className="flex min-h-10 shrink-0 items-center rounded-lg px-3 text-xs font-medium text-primary hover:bg-primary/5">
                           Focus
                         </button>
                       </div>
@@ -195,10 +207,10 @@ export function Setup({
                 ))}
               </div>
             </details>
-          </CardContent>
+          </CardContent>}
         </Card>
 
-        <label className="flex h-10 items-center gap-2 rounded-lg border bg-card px-3 text-muted-foreground focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
+        <label className="flex min-h-12 items-center gap-2 rounded-xl border bg-card px-3 text-muted-foreground shadow-xs focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15">
           <Search className="size-4 shrink-0" />
           <input
             value={search}
@@ -207,7 +219,7 @@ export function Setup({
             aria-label="Search topics"
             className="min-w-0 flex-1 bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
           />
-          {search && <button type="button" onClick={() => setSearch("")} className="text-xs hover:text-foreground">Clear search</button>}
+          {search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search" className="flex size-9 shrink-0 items-center justify-center rounded-lg hover:bg-muted hover:text-foreground"><X className="size-4" /></button>}
         </label>
 
         <div className="space-y-2">
@@ -229,7 +241,7 @@ export function Setup({
                     type="button"
                     onClick={() => setOpenGroups((current) => current.includes(group.title) ? current.filter((name) => name !== group.title) : [...current, group.title])}
                     aria-expanded={open}
-                    className="flex min-w-0 flex-1 items-center gap-2 text-left"
+                    className="flex min-h-10 min-w-0 flex-1 items-center gap-2 text-left"
                   >
                     <span className={cn("size-2 shrink-0 rounded-full", GROUP_TONES[group.title].dot)} />
                     <ChevronDown className={cn("size-4 shrink-0 transition-transform", !open && "-rotate-90")} />
@@ -243,7 +255,7 @@ export function Setup({
                     type="button"
                     variant="ghost"
                     size="sm"
-                    className="h-8 px-2 text-xs"
+                    className="h-10 px-3 text-xs"
                     onClick={() => onSelectGroup(matching.map((topic) => topic.id), groupSelected < matching.length)}
                   >
                     {groupSelected === matching.length ? "Clear" : "Select"}
@@ -262,8 +274,8 @@ export function Setup({
                           onClick={() => onToggleTopic(topic.id)}
                           aria-pressed={on}
                           className={cn(
-                            "flex min-w-0 items-center gap-3 border-b p-3 text-left transition-colors hover:bg-muted/60 sm:even:border-l",
-                            on && "bg-primary/[0.055]",
+                            "flex min-h-[72px] min-w-0 items-center gap-3 border-b p-3 text-left transition-colors hover:bg-muted/60 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring sm:even:border-l",
+                            on && "bg-primary/[0.07]",
                           )}
                         >
                           <span className={cn("flex size-5 shrink-0 items-center justify-center rounded border", on ? "border-primary bg-primary text-primary-foreground" : "bg-background")}>
@@ -325,14 +337,14 @@ export function Setup({
                       <li key={topic.id} className="flex items-center gap-2 px-3 py-2">
                         <span className={cn("size-1.5 shrink-0 rounded-full", tone.dot)} />
                         <span className="min-w-0 flex-1 truncate text-xs font-medium">{topic.title}</span>
-                        <span dir="rtl" className="shrink-0 font-arabic text-xs text-muted-foreground">{topic.arabicTitle}</span>
-                        <span className="w-14 shrink-0 text-right text-xs tabular-nums text-muted-foreground">{count} Q</span>
+                        <span dir="rtl" className="hidden shrink-0 font-arabic text-xs text-muted-foreground sm:inline">{topic.arabicTitle}</span>
+                        <span className="w-10 shrink-0 text-right text-xs tabular-nums text-muted-foreground sm:w-14">{count} Q</span>
                         <button
                           type="button"
                           aria-label={`Remove ${topic.title} from selected topics`}
                           title={`Remove ${topic.title}`}
                           onClick={() => onToggleTopic(topic.id)}
-                          className="flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="flex size-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <X className="size-3.5" />
                         </button>
@@ -350,17 +362,18 @@ export function Setup({
                   key={l}
                   variant={length === l ? "default" : "outline"}
                   size="sm"
+                  className="h-10"
                   disabled={available === 0}
                   onClick={() => onLength(l)}
                 >
                   {l}
                 </Button>
               ))}
-              <Button variant={length === "all" ? "default" : "outline"} size="sm" onClick={() => onLength("all")}>
+              <Button variant={length === "all" ? "default" : "outline"} size="sm" className="h-10" onClick={() => onLength("all")}>
                 All
               </Button>
             </div>
-            <Button className="h-11 w-full text-base" disabled={available === 0} onClick={onStart}>
+            <Button className="hidden h-12 w-full text-base lg:flex" disabled={available === 0} onClick={onStart}>
               {settings.shuffle ? <Shuffle /> : <Play />}
               {available === 0 ? "Pick at least one topic" : `Start ${sessionSize} questions`}
             </Button>
@@ -396,6 +409,19 @@ export function Setup({
           )}
         </p>
       </aside>
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-16px_rgba(15,23,42,0.3)] backdrop-blur lg:hidden">
+        <div className="mx-auto flex max-w-xl items-center gap-3">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-xs font-medium">{selectedTopics.length} topics selected</p>
+            <p className="truncate text-xs text-muted-foreground">{available} questions · {sessionSize} in this session</p>
+          </div>
+          <Button className="h-12 min-w-36 px-4" disabled={available === 0} onClick={onStart}>
+            {settings.shuffle ? <Shuffle /> : <Play />}
+            {available === 0 ? "Choose a topic" : "Start practice"}
+          </Button>
+        </div>
+      </div>
     </div>
   )
 }

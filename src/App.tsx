@@ -83,15 +83,15 @@ export default function App() {
 
   return (
     <div className="min-h-svh bg-background">
-      <header className="border-b bg-card/70 backdrop-blur">
+      <header className="sticky top-0 z-30 border-b bg-card/85 shadow-xs backdrop-blur supports-[backdrop-filter]:bg-card/75">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-          <button type="button" onClick={() => setScreen("setup")} className="flex items-center gap-3 text-left">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-primary font-arabic text-2xl text-primary-foreground">
-              ض
+          <button type="button" onClick={() => setScreen("setup")} className="flex min-w-0 items-center gap-3 text-left">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border bg-white shadow-xs">
+              <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" className="size-8 object-contain" />
             </div>
-            <div>
-              <h1 className="leading-tight font-semibold">Arabic for Heritage I · Quiz 2</h1>
-              <p className="text-xs text-muted-foreground">Fill-in-the-blank practice · {QUESTIONS.length} questions</p>
+            <div className="min-w-0">
+              <h1 className="truncate text-sm leading-tight font-semibold sm:text-base">Arabic for Heritage I · Quiz 2</h1>
+              <p className="truncate text-xs text-muted-foreground">Fill-in-the-blank practice · {QUESTIONS.length} questions</p>
             </div>
           </button>
           <span dir="rtl" className="hidden font-arabic text-xl text-primary sm:block">
@@ -103,7 +103,7 @@ export default function App() {
       <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
         {screen === "setup" && (
           <Tabs defaultValue="practice" className="gap-6">
-            <TabsList>
+          <TabsList className="h-11 w-full sm:w-fit">
               <TabsTrigger value="practice">Practice</TabsTrigger>
               <TabsTrigger value="uses">Grammar uses</TabsTrigger>
             </TabsList>

@@ -48,16 +48,16 @@ export function Results({ questions, records, onRetryMissed, onRestart, onSetup 
             {correct} of {total} correct{unanswered > 0 && ` · ${unanswered} not attempted`}
           </div>
           <p className="font-medium">{message(pct)}</p>
-          <div className="mt-2 flex flex-wrap justify-center gap-2">
+          <div className="mt-2 flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center">
             {missed.length + unanswered > 0 && (
-              <Button onClick={onRetryMissed}>
+              <Button className="h-11 w-full sm:w-auto" onClick={onRetryMissed}>
                 <RotateCcw /> Retry {missed.length + unanswered} missed
               </Button>
             )}
-            <Button variant="outline" onClick={onRestart}>
+            <Button variant="outline" className="h-11 w-full sm:w-auto" onClick={onRestart}>
               <RotateCcw /> Same topics, new mix
             </Button>
-            <Button variant="ghost" onClick={onSetup}>
+            <Button variant="ghost" className="h-11 w-full sm:w-auto" onClick={onSetup}>
               <Settings2 /> Change topics
             </Button>
           </div>
@@ -70,15 +70,15 @@ export function Results({ questions, records, onRetryMissed, onRestart, onSetup 
         </CardHeader>
         <CardContent className="space-y-3">
           {perTopic.map(({ topic, total: t, ok }) => (
-            <div key={topic.id} className="flex items-center gap-3">
-              <div className="w-40 shrink-0 text-sm">{topic.title}</div>
-              <div className="h-2 flex-1 overflow-hidden rounded-full bg-muted">
+            <div key={topic.id} className="flex items-center gap-2 sm:gap-3">
+              <div className="min-w-0 flex-1 truncate text-xs sm:w-40 sm:flex-none sm:text-sm">{topic.title}</div>
+              <div className="h-2 w-16 shrink-0 overflow-hidden rounded-full bg-muted sm:flex-1">
                 <div
                   className={cn("h-full rounded-full", ok / t >= 0.8 ? "bg-emerald-500" : ok / t >= 0.5 ? "bg-amber-500" : "bg-rose-500")}
                   style={{ width: `${(ok / t) * 100}%` }}
                 />
               </div>
-              <div className="w-12 text-right text-sm text-muted-foreground tabular-nums">
+              <div className="w-12 shrink-0 text-right text-xs text-muted-foreground tabular-nums sm:text-sm">
                 {ok}/{t}
               </div>
             </div>

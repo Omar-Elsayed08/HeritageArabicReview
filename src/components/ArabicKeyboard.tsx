@@ -56,7 +56,7 @@ export function ArabicKeyboard({ onInsert, onBackspace, onClear, onEnter, enterL
   return (
     <div
       dir="rtl"
-      className="w-full rounded-2xl border bg-muted/60 p-2 shadow-inner sm:p-3"
+      className="w-full rounded-2xl border bg-muted/60 p-1.5 shadow-inner sm:p-3"
       aria-label="Arabic on-screen keyboard"
     >
       <div className="mb-1.5 flex gap-1 sm:mb-2 sm:gap-1.5">
@@ -81,7 +81,7 @@ export function ArabicKeyboard({ onInsert, onBackspace, onClear, onEnter, enterL
           </div>
         ))}
 
-        <div className="flex gap-1 sm:gap-1.5" dir="ltr">
+        <div className="flex flex-wrap gap-1 sm:gap-1.5" dir="ltr">
           <button
             type="button"
             onMouseDown={(e) => e.preventDefault()}
@@ -109,9 +109,9 @@ export function ArabicKeyboard({ onInsert, onBackspace, onClear, onEnter, enterL
             onMouseDown={(e) => e.preventDefault()}
             onClick={() => onInsert(" ")}
             disabled={disabled}
-            className="h-11 flex-1 rounded-lg border border-b-[3px] bg-card text-sm text-muted-foreground transition-all hover:bg-accent active:translate-y-px sm:h-12"
+            className="h-11 min-w-16 flex-1 rounded-lg border border-b-[3px] bg-card text-xs text-muted-foreground transition-all hover:bg-accent active:translate-y-px sm:h-12 sm:text-sm"
           >
-            <span className="font-arabic">مسافة</span> · space
+            <span className="font-arabic">مسافة</span><span className="hidden sm:inline"> · space</span>
           </button>
           <button
             type="button"

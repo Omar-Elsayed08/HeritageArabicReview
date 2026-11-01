@@ -7,9 +7,9 @@ export function GrammarUses() {
       {TOPICS.map((t) => (
         <Card key={t.id} id={`uses-${t.id}`}>
           <CardHeader>
-            <div className="flex items-baseline justify-between gap-3">
-              <CardTitle>{t.title}</CardTitle>
-              <span dir="rtl" className="font-arabic text-xl text-primary">
+            <div className="flex min-w-0 flex-col items-start justify-between gap-1 sm:flex-row sm:items-baseline sm:gap-3">
+              <CardTitle className="min-w-0 text-base sm:text-lg">{t.title}</CardTitle>
+              <span dir="rtl" className="font-arabic text-lg text-primary sm:text-xl">
                 {t.arabicTitle}
               </span>
             </div>
@@ -18,7 +18,7 @@ export function GrammarUses() {
           <CardContent>
             <ul className="divide-y">
               {t.uses.map((u) => (
-                <li key={u.label} className="grid grid-cols-[minmax(0,9rem)_1fr] gap-3 py-2.5 first:pt-0 last:pb-0">
+                <li key={u.label} className="grid grid-cols-1 gap-1.5 py-3 first:pt-0 last:pb-0 sm:grid-cols-[minmax(0,9rem)_1fr] sm:gap-3">
                   <div>
                     <div className="text-sm font-medium">{u.label}</div>
                     {u.arabic && (

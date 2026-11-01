@@ -147,22 +147,22 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
   const filledSentence = q.sentence.replace("___", q.answers[0].replace(/ـ$/, ""))
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4">
-      <div className="flex items-center gap-3">
-        <Button variant="ghost" size="icon" onClick={() => onExit(records)} aria-label="End session">
+    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-5">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Button variant="ghost" size="icon" className="size-11 rounded-xl" onClick={() => onExit(records)} aria-label="End session">
           <X />
         </Button>
         <Progress value={((index + (answered ? 1 : 0)) / questions.length) * 100} className="flex-1" />
-        <div className="text-sm whitespace-nowrap text-muted-foreground tabular-nums">
+        <div className="text-xs whitespace-nowrap text-muted-foreground tabular-nums sm:text-sm">
           {index + 1} / {questions.length}
         </div>
-        <Badge variant="outline" className="tabular-nums">
+        <Badge variant="outline" className="hidden tabular-nums sm:inline-flex">
           {score} correct
         </Badge>
       </div>
 
-      <Card className="overflow-visible">
-        <CardContent className="space-y-5 py-2">
+      <Card className="overflow-visible border-primary/10 bg-gradient-to-br from-card via-card to-primary/[0.035] shadow-sm">
+        <CardContent className="space-y-4 px-4 py-4 sm:space-y-5 sm:px-6 sm:py-6">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <Badge>{topic.title}</Badge>
@@ -196,10 +196,10 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
             </ul>
           )}
 
-          <p className="text-sm text-muted-foreground">{topic.instruction}</p>
+          <p className="rounded-lg bg-muted/50 px-3 py-2 text-sm leading-relaxed text-muted-foreground">{topic.instruction}</p>
 
           {q.topic === "vocabulary" ? (
-            <div className="rounded-xl bg-muted/50 p-5 text-center">
+            <div className="rounded-2xl border border-primary/10 bg-primary/[0.035] p-5 text-center sm:p-7">
               <p className="text-sm text-muted-foreground">What does this word mean?</p>
               <p dir="rtl" className="mt-2 font-arabic text-3xl text-primary">{q.cue}</p>
             </div>
@@ -237,7 +237,7 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
                 </button>
               ))}
             </div>
-          ) : <div dir="rtl" className="font-arabic text-2xl leading-[2.4] sm:text-3xl sm:leading-[2.4]">
+          ) : <div dir="rtl" className="rounded-2xl border bg-background/80 p-4 font-arabic text-2xl leading-[2.2] shadow-xs sm:p-6 sm:text-3xl sm:leading-[2.4]">
             {before}
             <input
               ref={inputRef}
@@ -312,24 +312,24 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
           )}
 
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex gap-2">
+            <div className="flex w-full gap-2 sm:w-auto">
               {!answered && !q.choices && (
                 <>
-                  <Button variant="outline" size="sm" onClick={() => setShowHint((v) => !v)}>
+                  <Button variant="outline" size="sm" className="h-11 flex-1 sm:flex-none" onClick={() => setShowHint((v) => !v)}>
                     <Lightbulb /> {showHint ? "Hide hint" : "Hint"}
                   </Button>
-                  <Button variant="ghost" size="sm" onClick={reveal}>
+                  <Button variant="ghost" size="sm" className="h-11 flex-1 sm:flex-none" onClick={reveal}>
                     <Eye /> Show answer
                   </Button>
                 </>
               )}
             </div>
             {answered ? (
-              <Button onClick={next} size="lg">
+              <Button onClick={next} size="lg" className="h-12 w-full sm:w-auto">
                 {isLast ? "See results" : "Next question"} <ArrowRight />
               </Button>
             ) : q.choices ? null : (
-              <Button onClick={check} size="lg">
+              <Button onClick={check} size="lg" className="h-12 w-full sm:w-auto">
                 Check answer
               </Button>
             )}
