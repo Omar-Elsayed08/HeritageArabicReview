@@ -82,28 +82,29 @@ export default function App() {
   const markCorrect = useCallback((id: string) => setMastery((m) => (m[id] ? m : { ...m, [id]: true })), [setMastery])
 
   return (
-    <div className="min-h-svh bg-background">
-      <header className="sticky top-0 z-30 border-b bg-card/85 shadow-xs backdrop-blur supports-[backdrop-filter]:bg-card/75">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+    <div className="min-h-svh">
+      <header className="sticky top-0 z-30 border-b border-border/70 bg-background/85 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <button type="button" onClick={() => setScreen("setup")} className="flex min-w-0 items-center gap-3 text-left">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border bg-white shadow-xs">
-              <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" className="size-8 object-contain" />
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border/80 bg-white shadow-sm">
+              <img src={`${import.meta.env.BASE_URL}favicon.png`} alt="" className="size-9 object-contain" />
             </div>
             <div className="min-w-0">
+              <p className="truncate text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">Heritage Arabic · Review</p>
               <h1 className="truncate text-sm leading-tight font-semibold sm:text-base">Arabic for Heritage I · Quiz 2</h1>
-              <p className="truncate text-xs text-muted-foreground">Fill-in-the-blank practice · {QUESTIONS.length} questions</p>
             </div>
           </button>
-          <span dir="rtl" className="hidden font-arabic text-xl text-primary sm:block">
-            املأ الفراغ
-          </span>
+          <div className="hidden items-center gap-2 rounded-full border border-border/70 bg-card/80 px-3 py-2 text-xs font-medium text-muted-foreground sm:flex">
+            <span className="size-1.5 rounded-full bg-primary" />
+            {QUESTIONS.length.toLocaleString()} practice questions
+          </div>
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8">
+      <main className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-8">
         {screen === "setup" && (
-          <Tabs defaultValue="practice" className="gap-6">
-          <TabsList className="h-11 w-full sm:w-fit">
+          <Tabs defaultValue="practice" className="gap-5 sm:gap-7">
+            <TabsList className="h-12 w-full border border-border/70 bg-card/70 p-1 shadow-sm sm:w-fit">
               <TabsTrigger value="practice">Practice</TabsTrigger>
               <TabsTrigger value="uses">Grammar uses</TabsTrigger>
             </TabsList>

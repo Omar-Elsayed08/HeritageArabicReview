@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { ArrowRight, BookOpen, CheckCircle2, CircleAlert, Eye, Lightbulb, X, XCircle } from "lucide-react"
-import { Badge } from "@/components/ui/badge"
+import { ArrowRight, BookOpen, CheckCircle2, CircleAlert, Eye, Lightbulb, Trophy, X, XCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
@@ -147,33 +146,39 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
   const filledSentence = q.sentence.replace("___", q.answers[0].replace(/ـ$/, ""))
 
   return (
-    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-5">
-      <div className="flex items-center gap-2 sm:gap-3">
-        <Button variant="ghost" size="icon" className="size-11 rounded-xl" onClick={() => onExit(records)} aria-label="End session">
+    <div className="mx-auto max-w-3xl space-y-4 sm:space-y-6">
+      <div className="flex items-center gap-2 rounded-2xl border border-border/70 bg-card/85 p-2 shadow-sm backdrop-blur-sm sm:gap-4 sm:px-3">
+        <Button variant="ghost" size="icon" className="size-11 rounded-xl text-muted-foreground hover:bg-destructive/10 hover:text-destructive" onClick={() => onExit(records)} aria-label="End session">
           <X />
         </Button>
-        <Progress value={((index + (answered ? 1 : 0)) / questions.length) * 100} className="flex-1" />
-        <div className="text-xs whitespace-nowrap text-muted-foreground tabular-nums sm:text-sm">
-          {index + 1} / {questions.length}
+        <div className="min-w-0 flex-1 space-y-1.5">
+          <div className="flex items-center justify-between gap-2 text-[10px] font-semibold tracking-[0.14em] text-muted-foreground uppercase">
+            <span>Practice session</span>
+            <span className="whitespace-nowrap tabular-nums">{index + 1} <span className="font-normal tracking-normal">of</span> {questions.length}</span>
+          </div>
+          <Progress value={((index + (answered ? 1 : 0)) / questions.length) * 100} className="h-2 flex-1" />
         </div>
-        <Badge variant="outline" className="hidden tabular-nums sm:inline-flex">
-          {score} correct
-        </Badge>
+        <div className="flex shrink-0 items-center gap-1.5 rounded-xl bg-accent/70 px-2.5 py-2 text-xs font-semibold text-accent-foreground sm:px-3">
+          <Trophy className="size-3.5" />
+          <span className="tabular-nums">{score}</span>
+          <span className="hidden sm:inline">correct</span>
+        </div>
       </div>
 
-      <Card className="overflow-visible border-primary/10 bg-gradient-to-br from-card via-card to-primary/[0.035] shadow-sm">
-        <CardContent className="space-y-4 px-4 py-4 sm:space-y-5 sm:px-6 sm:py-6">
+      <Card className="overflow-visible border-primary/15 bg-card shadow-[0_18px_54px_-36px_rgba(29,61,51,0.36)] sm:rounded-3xl">
+        <CardContent className="space-y-5 px-4 py-5 sm:space-y-6 sm:px-7 sm:py-7">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <Badge>{topic.title}</Badge>
-              <span dir="rtl" className="font-arabic text-primary">
+            <div className="flex min-w-0 items-center gap-2.5">
+              <span className="size-2 rounded-full bg-primary ring-4 ring-primary/10" />
+              <span className="truncate text-sm font-semibold">{topic.title}</span>
+              <span dir="rtl" className="rounded-full bg-primary/8 px-2 py-1 font-arabic text-sm text-primary">
                 {topic.arabicTitle}
               </span>
             </div>
             <button
               type="button"
               onClick={() => setShowUses((v) => !v)}
-              className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               <BookOpen className="size-3.5" />
               {showUses ? "Hide uses" : "Uses for this type"}
@@ -181,7 +186,7 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
           </div>
 
           {showUses && (
-            <ul className="space-y-1.5 rounded-lg bg-muted/60 p-3 text-sm">
+            <ul className="space-y-1.5 rounded-2xl border border-border/70 bg-muted/55 p-4 text-sm">
               {topic.uses.map((u) => (
                 <li key={u.label} className="text-muted-foreground">
                   <span className="font-medium text-foreground">{u.label}</span>
@@ -196,18 +201,22 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
             </ul>
           )}
 
-          <p className="rounded-lg bg-muted/50 px-3 py-2 text-sm leading-relaxed text-muted-foreground">{topic.instruction}</p>
+          <div className="flex items-start gap-3 rounded-2xl border border-primary/12 bg-primary/[0.045] px-4 py-3.5">
+            <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-[10px] font-bold text-primary">i</span>
+            <p className="text-sm leading-relaxed text-muted-foreground">{topic.instruction}</p>
+          </div>
 
           {q.topic === "vocabulary" ? (
-            <div className="rounded-2xl border border-primary/10 bg-primary/[0.035] p-5 text-center sm:p-7">
-              <p className="text-sm text-muted-foreground">What does this word mean?</p>
-              <p dir="rtl" className="mt-2 font-arabic text-3xl text-primary">{q.cue}</p>
+            <div className="relative overflow-hidden rounded-3xl border border-primary/12 bg-gradient-to-br from-primary/[0.09] via-primary/[0.035] to-accent/30 p-6 text-center sm:p-9">
+              <span className="text-[10px] font-semibold tracking-[0.2em] text-muted-foreground uppercase">Vocabulary check</span>
+              <p className="mt-2 text-sm text-muted-foreground">What does this word mean?</p>
+              <p dir="rtl" className="mt-3 font-arabic text-4xl text-primary sm:text-5xl">{q.cue}</p>
             </div>
           ) : q.cue && (
-            <div className="flex justify-end">
+            <div className="flex justify-start">
               <span
                 dir="rtl"
-                className="rounded-full border border-dashed border-primary/50 bg-primary/5 px-3 py-1 font-arabic text-lg text-primary"
+                className="inline-flex items-center gap-2 rounded-xl border border-primary/15 bg-primary/[0.055] px-3.5 py-2 font-arabic text-base text-primary"
               >
                 {q.topic === "pronouns" ? (
                   /[\u0600-\u06FF]/.test(q.cue) ? <>استبدل: «{q.cue}»</> : <span dir="ltr" className="font-sans text-sm">{q.cue}</span>
@@ -219,7 +228,7 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
           )}
 
           {q.choices ? (
-            <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="Answer choices">
+            <div className="grid gap-2.5 sm:grid-cols-2" role="group" aria-label="Answer choices">
               {q.choices.map((choice) => (
                 <button
                   key={choice}
@@ -227,17 +236,17 @@ export function Quiz({ questions, settings, onFinish, onExit, onCorrect }: Props
                   disabled={answered}
                   onClick={() => choose(choice)}
                   className={cn(
-                    "min-h-12 rounded-lg border bg-background px-4 py-3 text-left text-sm transition-colors hover:border-primary hover:bg-primary/5 disabled:cursor-default",
-                    current?.input === choice && current.outcome === "correct" && "border-emerald-500 bg-emerald-50 text-emerald-800",
-                    current?.input === choice && current.outcome !== "correct" && "border-rose-400 bg-rose-50 text-rose-800",
-                    answered && choice === q.answers[0] && current?.outcome !== "correct" && "border-emerald-500 bg-emerald-50 text-emerald-800",
+                    "min-h-14 rounded-2xl border border-border/80 bg-background px-4 py-3 text-left text-sm font-medium shadow-[0_1px_2px_rgba(22,38,30,0.04)] transition-all hover:-translate-y-0.5 hover:border-primary/45 hover:bg-primary/[0.035] hover:shadow-md disabled:cursor-default sm:px-5",
+                    current?.input === choice && current.outcome === "correct" && "border-emerald-500/70 bg-emerald-50 text-emerald-900 shadow-sm",
+                    current?.input === choice && current.outcome !== "correct" && "border-rose-400/70 bg-rose-50 text-rose-900 shadow-sm",
+                    answered && choice === q.answers[0] && current?.outcome !== "correct" && "border-emerald-500/70 bg-emerald-50 text-emerald-900 shadow-sm",
                   )}
                 >
                   {choice}
                 </button>
               ))}
             </div>
-          ) : <div dir="rtl" className="rounded-2xl border bg-background/80 p-4 font-arabic text-2xl leading-[2.2] shadow-xs sm:p-6 sm:text-3xl sm:leading-[2.4]">
+          ) : <div dir="rtl" className="rounded-3xl border border-border/70 bg-background/75 px-4 py-5 font-arabic text-2xl leading-[2.25] shadow-inner shadow-foreground/[0.025] sm:px-7 sm:py-8 sm:text-3xl sm:leading-[2.4]">
             {before}
             <input
               ref={inputRef}

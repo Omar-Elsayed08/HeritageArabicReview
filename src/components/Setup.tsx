@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Play, Search, Shuffle, X } from "lucide-react"
+import { Check, ChevronDown, Play, Search, Shuffle, Sparkles, X } from "lucide-react"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -91,12 +91,33 @@ export function Setup({
   }
 
   return (
-    <div className="grid gap-6 pb-24 lg:grid-cols-[1fr_340px] lg:pb-0">
+    <div className="grid gap-5 pb-24 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-7 lg:pb-0">
+      <div className="relative isolate overflow-hidden rounded-[1.75rem] bg-primary px-5 py-6 text-primary-foreground shadow-xl shadow-primary/10 sm:px-8 sm:py-8 lg:col-span-2">
+        <div aria-hidden="true" className="absolute -right-14 -top-24 size-64 rounded-full border border-current/10" />
+        <div aria-hidden="true" className="absolute -right-1 -bottom-32 size-72 rounded-full border border-current/10" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+          <div className="max-w-2xl">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] uppercase">
+              <Sparkles className="size-3.5" />
+              Heritage Arabic · Quiz 02
+            </div>
+            <h2 className="max-w-[18ch] text-3xl leading-[1.08] font-semibold tracking-tight sm:text-4xl">A little practice goes a long way.</h2>
+            <p className="mt-3 max-w-xl text-sm leading-relaxed text-primary-foreground/75 sm:text-base">Choose what you want to work on, then build confidence one answer at a time.</p>
+          </div>
+          <div className="relative flex shrink-0 items-center gap-3 rounded-2xl border border-current/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
+            <span dir="rtl" className="font-arabic text-3xl leading-none">العَرَبِيَّة</span>
+            <span className="h-9 w-px bg-current/20" />
+            <span className="text-xs leading-relaxed text-primary-foreground/75">{TOPICS.length} topics<br />{QUESTIONS.length.toLocaleString()} questions</span>
+          </div>
+        </div>
+      </div>
+
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Choose your topics</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="mb-1 text-[10px] font-semibold tracking-[0.18em] text-primary uppercase">Build a practice set</p>
+            <h2 className="text-2xl font-semibold tracking-tight">Choose your focus</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
               {selected.length} of {TOPICS.length} selected · {available} questions available
             </p>
           </div>
@@ -110,7 +131,7 @@ export function Setup({
           </div>
         </div>
 
-        <Card className="overflow-hidden border-primary/15 bg-gradient-to-br from-card via-card to-primary/[0.06]">
+        <Card className="overflow-hidden border-primary/15 bg-gradient-to-br from-card via-card to-primary/[0.07]">
           <CardHeader className="p-0">
             <button
               type="button"
@@ -306,18 +327,18 @@ export function Setup({
         </div>
       </section>
 
-      <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-        <Card className="border-primary/15 shadow-md shadow-primary/[0.04]">
+      <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <Card className="border-primary/20 shadow-lg shadow-primary/[0.06] lg:rounded-3xl">
           <CardHeader>
             <div className="flex items-center justify-between gap-2">
-              <CardTitle>Session</CardTitle>
-              <Badge variant="outline" className="border-primary/20 bg-primary/[0.06] text-primary">{selectedTopics.length} topics</Badge>
+              <CardTitle className="text-lg font-semibold tracking-tight">Your session</CardTitle>
+              <Badge variant="outline" className="h-7 border-primary/20 bg-primary/[0.07] px-2.5 text-primary">{selectedTopics.length} topics</Badge>
             </div>
             <CardDescription>Choose the length and review the topics in your question pool.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="overflow-hidden rounded-lg border bg-muted/20">
-              <div className="flex items-center justify-between gap-2 border-b bg-background/70 px-3 py-2">
+            <div className="overflow-hidden rounded-2xl border border-border/70 bg-background/65">
+              <div className="flex items-center justify-between gap-2 border-b border-border/70 bg-muted/50 px-3 py-2.5">
                 <span className="text-xs font-semibold">Selected topics</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs tabular-nums text-muted-foreground">{available} questions in pool</span>
@@ -344,7 +365,7 @@ export function Setup({
                           aria-label={`Remove ${topic.title} from selected topics`}
                           title={`Remove ${topic.title}`}
                           onClick={() => onToggleTopic(topic.id)}
-                          className="flex size-10 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                          className="flex size-10 shrink-0 items-center justify-center rounded-xl text-muted-foreground transition-colors hover:bg-destructive/10 hover:text-destructive focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <X className="size-3.5" />
                         </button>
@@ -410,7 +431,7 @@ export function Setup({
         </p>
       </aside>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t bg-background/95 px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-16px_rgba(15,23,42,0.3)] backdrop-blur lg:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-primary/20 bg-background/95 px-4 pt-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_-16px_rgba(15,23,42,0.3)] backdrop-blur-xl lg:hidden">
         <div className="mx-auto flex max-w-xl items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="truncate text-xs font-medium">{selectedTopics.length} topics selected</p>

@@ -35,8 +35,8 @@ function Key({
       onMouseDown={(e) => e.preventDefault()}
       onClick={() => onPress(def.char)}
       className={cn(
-        "relative flex h-11 min-w-0 flex-1 items-center justify-center rounded-lg border border-b-[3px] border-border bg-card font-arabic text-xl text-foreground shadow-xs transition-all select-none",
-        "hover:bg-accent active:translate-y-px active:border-b disabled:opacity-40 sm:h-12 sm:text-2xl",
+        "relative flex h-11 min-w-0 flex-1 items-center justify-center rounded-xl border border-border/80 border-b-[3px] bg-card font-arabic text-xl text-foreground shadow-[0_2px_5px_rgba(22,38,30,0.06)] transition-all select-none",
+        "hover:border-primary/35 hover:bg-primary/[0.035] active:translate-y-px active:border-b disabled:opacity-40 sm:h-12 sm:text-2xl",
         className,
       )}
     >
@@ -56,7 +56,7 @@ export function ArabicKeyboard({ onInsert, onBackspace, onClear, onEnter, enterL
   return (
     <div
       dir="rtl"
-      className="w-full rounded-2xl border bg-muted/60 p-1.5 shadow-inner sm:p-3"
+      className="w-full rounded-3xl border border-border/75 bg-card/90 p-2 shadow-sm sm:p-3"
       aria-label="Arabic on-screen keyboard"
     >
       <div className="mb-1.5 flex gap-1 sm:mb-2 sm:gap-1.5">
