@@ -79,6 +79,13 @@ export default function App() {
     if (pool.length) begin(pool, prefs.length === "all" || typeof prefs.length === "number" ? prefs.length : 20)
   }
 
+  const startTopic = (topic: TopicId) => {
+    const pool = QUESTIONS.filter((question) => question.topic === topic)
+    if (!pool.length) return
+    setPrefs((current) => ({ ...current, selected: [topic] }))
+    begin(pool, prefs.length === "all" || typeof prefs.length === "number" ? prefs.length : 20)
+  }
+
   const markCorrect = useCallback((id: string) => setMastery((m) => (m[id] ? m : { ...m, [id]: true })), [setMastery])
 
   return (
@@ -138,7 +145,7 @@ export default function App() {
               />
             </TabsContent>
             <TabsContent value="uses">
-              <GrammarUses />
+              <GrammarUses onPracticeTopic={startTopic} />
             </TabsContent>
           </Tabs>
         )}

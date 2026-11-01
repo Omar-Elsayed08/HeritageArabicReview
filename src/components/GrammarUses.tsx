@@ -1,8 +1,9 @@
-import { BookOpenText } from "lucide-react"
+import { BookOpenText, Play } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { TOPICS } from "@/data/topics"
+import { Button } from "@/components/ui/button"
+import { TOPICS, type TopicId } from "@/data/topics"
 
-export function GrammarUses() {
+export function GrammarUses({ onPracticeTopic }: { onPracticeTopic: (topic: TopicId) => void }) {
   return (
     <div className="space-y-5 sm:space-y-7">
       <div className="flex flex-col gap-4 rounded-3xl border border-primary/15 bg-gradient-to-br from-card via-card to-primary/[0.065] p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between sm:p-7">
@@ -30,7 +31,13 @@ export function GrammarUses() {
                 {t.arabicTitle}
               </span>
             </div>
-            <CardDescription>{t.summary}</CardDescription>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <CardDescription>{t.summary}</CardDescription>
+              <Button size="sm" className="min-h-10 shrink-0" onClick={() => onPracticeTopic(t.id)}>
+                <Play className="size-4" />
+                Practice this topic
+              </Button>
+            </div>
           </CardHeader>
           <CardContent>
             <ul className="divide-y">
