@@ -1,4 +1,4 @@
-import { Check, ChevronDown, Play, Search, Shuffle, Sparkles, X } from "lucide-react"
+import { Check, ChevronDown, Play, Search, Shuffle, X } from "lucide-react"
 import { useState } from "react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -92,26 +92,6 @@ export function Setup({
 
   return (
     <div className="grid gap-5 pb-24 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-7 lg:pb-0">
-      <div className="relative isolate overflow-hidden rounded-[1.75rem] bg-primary px-5 py-6 text-primary-foreground shadow-xl shadow-primary/10 sm:px-8 sm:py-8 lg:col-span-2">
-        <div aria-hidden="true" className="absolute -right-14 -top-24 size-64 rounded-full border border-current/10" />
-        <div aria-hidden="true" className="absolute -right-1 -bottom-32 size-72 rounded-full border border-current/10" />
-        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-2xl">
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-current/15 bg-white/10 px-3 py-1.5 text-[10px] font-semibold tracking-[0.2em] uppercase">
-              <Sparkles className="size-3.5" />
-              Heritage Arabic · Quiz 02
-            </div>
-            <h2 className="max-w-[18ch] text-3xl leading-[1.08] font-semibold tracking-tight sm:text-4xl">A little practice goes a long way.</h2>
-            <p className="mt-3 max-w-xl text-sm leading-relaxed text-primary-foreground/75 sm:text-base">Choose what you want to work on, then build confidence one answer at a time.</p>
-          </div>
-          <div className="relative flex shrink-0 items-center gap-3 rounded-2xl border border-current/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
-            <span dir="rtl" className="font-arabic text-3xl leading-none">العَرَبِيَّة</span>
-            <span className="h-9 w-px bg-current/20" />
-            <span className="text-xs leading-relaxed text-primary-foreground/75">{TOPICS.length} topics<br />{QUESTIONS.length.toLocaleString()} questions</span>
-          </div>
-        </div>
-      </div>
-
       <section className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
