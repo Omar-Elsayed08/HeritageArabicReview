@@ -117,7 +117,7 @@ export default function App() {
               <TabsTrigger value="practice">Practice</TabsTrigger>
               <TabsTrigger value="uses">Grammar uses</TabsTrigger>
             </TabsList>
-            <TabsContent value="practice">
+            <TabsContent value="practice" className="animate-screen-enter">
               <Setup
                 selected={prefs.selected}
                 onToggleTopic={(id) =>
@@ -146,7 +146,7 @@ export default function App() {
                 onStart={start}
               />
             </TabsContent>
-            <TabsContent value="uses">
+            <TabsContent value="uses" className="animate-screen-enter">
               <GrammarUses onPracticeTopic={startTopic} />
             </TabsContent>
           </Tabs>
@@ -192,6 +192,7 @@ export default function App() {
         )}
 
         {screen === "results" && (
+          <div className="animate-screen-enter">
           <Results
             questions={session}
             records={records}
@@ -202,6 +203,7 @@ export default function App() {
             onRestart={start}
             onSetup={() => setScreen("setup")}
           />
+          </div>
         )}
       </main>
 
