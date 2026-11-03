@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "Heritage Arabic Review",
+  "short_name": "Arabic Review",
+  "description": "Practice Arabic for Heritage I with topic quizzes, grammar review, and vocabulary.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f8f5ed",
+  "theme_color": "#245c4f",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

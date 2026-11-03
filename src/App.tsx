@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpenText, PanelsTopLeft, Play, Shuffle } from "lucide-react"
+import { BookOpenText, Download, PanelsTopLeft, Play, Shuffle, X } from "lucide-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Setup } from "@/components/Setup"
 import { GrammarUses } from "@/components/GrammarUses"
@@ -11,6 +11,11 @@ import { usePersistentState } from "@/lib/storage"
 import type { AnswerRecord, Mastery, Settings } from "@/types"
 
 type Screen = "setup" | "quiz" | "results"
+
+interface InstallPromptEvent extends Event {
+  prompt: () => Promise<void>
+  userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>
+}
 
 const DEFAULT_SETTINGS: Settings = {
   shuffle: true,
@@ -33,6 +38,9 @@ function shuffled<T>(list: T[]): T[] {
 export default function App() {
   const [screen, setScreen] = useState<Screen>("setup")
   const [setupTab, setSetupTab] = useState("practice")
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null)
+  const [installHelp, setInstallHelp] = useState(false)
+  const [isInstalled, setIsInstalled] = useState(false)
   const [prefs, setPrefs] = usePersistentState("ahq-prefs", {
     selected: TOPICS.map((t) => t.id) as TopicId[],
     length: 20 as number | "all",
@@ -58,6 +66,29 @@ export default function App() {
     const additions = newTopics.filter((id) => !selected.includes(id))
     if (additions.length) setPrefs((current) => ({ ...current, selected: [...selected, ...additions] }))
   }, [prefs.selected, setPrefs])
+
+  useEffect(() => {
+    if (import.meta.env.PROD && "serviceWorker" in navigator) {
+      void navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { scope: import.meta.env.BASE_URL }).catch(() => undefined)
+    }
+
+    setIsInstalled(window.matchMedia("(display-mode: standalone)").matches)
+    const onInstallPrompt = (event: Event) => {
+      event.preventDefault()
+      setInstallPrompt(event as InstallPromptEvent)
+    }
+    const onInstalled = () => {
+      setIsInstalled(true)
+      setInstallPrompt(null)
+      setInstallHelp(false)
+    }
+    window.addEventListener("beforeinstallprompt", onInstallPrompt)
+    window.addEventListener("appinstalled", onInstalled)
+    return () => {
+      window.removeEventListener("beforeinstallprompt", onInstallPrompt)
+      window.removeEventListener("appinstalled", onInstalled)
+    }
+  }, [])
 
   const settings = { ...DEFAULT_SETTINGS, ...(prefs.settings && typeof prefs.settings === "object" ? prefs.settings : {}) }
 
@@ -88,6 +119,16 @@ export default function App() {
     begin(pool, prefs.length === "all" || typeof prefs.length === "number" ? prefs.length : 20)
   }
 
+  async function installApp() {
+    if (!installPrompt) {
+      setInstallHelp((visible) => !visible)
+      return
+    }
+    await installPrompt.prompt()
+    await installPrompt.userChoice
+    setInstallPrompt(null)
+  }
+
   const markCorrect = useCallback((id: string) => setMastery((m) => (m[id] ? m : { ...m, [id]: true })), [setMastery])
 
   return (
@@ -107,8 +148,17 @@ export default function App() {
             <span className="size-1.5 rounded-full bg-primary" />
             {QUESTIONS.length.toLocaleString()} practice questions
           </div>
+          {!isInstalled && <button type="button" onClick={() => void installApp()} aria-label="Install Heritage Arabic Review" className="flex min-h-10 shrink-0 items-center justify-center gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 text-sm font-semibold text-primary hover:bg-primary/10">
+            <Download className="size-4" />
+            <span className="hidden sm:inline">Install</span>
+          </button>}
         </div>
       </header>
+
+      {installHelp && !isInstalled && <div role="status" className="mx-auto flex max-w-6xl items-center justify-between gap-3 border-b border-primary/15 bg-primary/5 px-4 py-2 text-xs text-muted-foreground sm:px-6">
+        <span>In Chrome, open the browser menu and choose “Install app” to add it to your device.</span>
+        <button type="button" onClick={() => setInstallHelp(false)} aria-label="Dismiss install instructions" className="flex size-8 shrink-0 items-center justify-center rounded-lg hover:bg-primary/10"><X className="size-4" /></button>
+      </div>}
 
       <main className={`mx-auto max-w-6xl px-3 pt-3 sm:px-6 sm:py-8 ${screen === "setup" ? "pb-24 sm:pb-8" : "pb-6"} ${screen === "quiz" ? "sm:pt-8" : ""}`}>
         {screen === "setup" && (
